@@ -1,11 +1,13 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { NAV, SUPPORT_LINK } from "./nav-items";
+import { clearSession } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
 export function Sidebar({ userName, businessName }: { userName: string; businessName: string }) {
   const pathname = usePathname();
+  const router = useRouter();
   const initials = userName
     .split(/\s+/)
     .filter(Boolean)
@@ -53,10 +55,18 @@ export function Sidebar({ userName, businessName }: { userName: string; business
         <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/10 text-[12px] font-semibold text-white">
           {initials || "--"}
         </span>
-        <span className="min-w-0">
+        <span className="min-w-0 flex-1">
           <span className="block truncate text-[14px] font-semibold text-white">{userName || "Your account"}</span>
           <span className="block truncate text-[12px] text-[#94A3B8]">{businessName || "No business yet"}</span>
         </span>
+        <button
+          onClick={() => { clearSession(); router.replace("/login"); }}
+          title="Sign out"
+          aria-label="Sign out"
+          className="rounded-lg p-2 text-[#94A3B8] transition-colors hover:bg-white/10 hover:text-white"
+        >
+          <svg className="h-[18px] w-[18px]" viewBox="0 0 20 20" fill="none"><path d="M12.5 6.5v-2a1.5 1.5 0 0 0-1.5-1.5H4.5A1.5 1.5 0 0 0 3 4.5v11A1.5 1.5 0 0 0 4.5 17H11a1.5 1.5 0 0 0 1.5-1.5v-2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/><path d="M8 10h9m0 0-2.8-2.8M17 10l-2.8 2.8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
+        </button>
       </div>
     </aside>
   );

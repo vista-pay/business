@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NAV, SUPPORT_LINK } from "./nav-items";
 import { cn } from "@/lib/utils";
+import { clearSession } from "@/lib/api";
 
 /** Below the `lg` breakpoint the rail is replaced by this bar plus a drawer. */
 export function MobileNav({ userName, businessName }: { userName: string; businessName: string }) {
@@ -81,6 +82,10 @@ export function MobileNav({ userName, businessName }: { userName: string; busine
             <div className="border-t border-white/10 px-5 py-4">
               <span className="block truncate text-[14px] font-semibold text-white">{userName || "Your account"}</span>
               <span className="block truncate text-[12px] text-[#94A3B8]">{businessName || "No business yet"}</span>
+              <button
+                onClick={() => { clearSession(); window.location.href = "/login"; }}
+                className="mt-3 flex h-9 w-full items-center justify-center gap-2 rounded-lg bg-white/10 text-[13px] font-semibold text-white"
+              >Sign out</button>
             </div>
           </div>
         </div>

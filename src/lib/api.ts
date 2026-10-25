@@ -18,10 +18,15 @@ export function getAccessToken() {
   if (typeof window !== "undefined") return localStorage.getItem("vista_business_token");
   return null;
 }
+/** Removes every trace of the session: access token, cookie, refresh token. */
+export function clearSession() {
+  setAccessToken(null);
+  if (typeof window !== "undefined") localStorage.removeItem("vista_business_refresh");
+}
+
 function clearAuthAndRedirect() {
   if (typeof window !== "undefined") {
-    localStorage.removeItem("vista_business_token");
-    document.cookie = "vista_business_token=; path=/; max-age=0";
+    clearSession();
     const cur = window.location.pathname;
     if (cur !== "/login" && cur !== "/register" && !cur.startsWith("/verify")) {
       window.location.href = "/login";
@@ -159,4 +164,52 @@ export const businessApi = {
   listInvoices: (businessId: string) => apiFetch<unknown[]>("/invoices", { params: { businessId } }),
   getKyc: () => apiFetch("/kyc"),
   submitKyc: (body: Record<string, unknown>) => apiFetch("/kyc/submit", { method: "POST", body: JSON.stringify(body) }),
+
+  // ------------------------------------------------ business settings
+  updateBusiness: (id: string, body: Partial<{ name: string; registrationNumber: string; taxId: string; phone: string; website: string; businessType: string; industry: string; address: string; city: string; state: string; country: string }>) =>
+    apiFetch(`/businesses/${id}`, { method: "PATCH", body: JSON.stringify(body) }),
+  getBusinessSettings: (id: string) => apiFetch<BusinessSettings>(`/businesses/${id}/settings`),
+  updateBusinessSettings: (id: string, body: Partial<BusinessSettings>) =>
+    apiFetch<BusinessSettings>(`/businesses/${id}/settings`, { method: "PATCH", body: JSON.stringify(body) }),
+  listSettlementAccounts: (id: string) => apiFetch<SettlementAccount[]>(`/businesses/${id}/settlement-accounts`),
+  addSettlementAccount: (id: string, body: { bankName: string; bankCode: string; accountNumber: string; accountName: string; isDefault?: boolean }) =>
+    apiFetch<SettlementAccount>(`/businesses/${id}/settlement-accounts`, { method: "POST", body: JSON.stringify(body) }),
+  makeSettlementAccountDefault: (id: string, accountId: string) =>
+    apiFetch<SettlementAccount>(`/businesses/${id}/settlement-accounts/${accountId}/default`, { method: "PATCH", body: "{}" }),
+  removeSettlementAccount: (id: string, accountId: string) =>
+    apiFetch(`/businesses/${id}/settlement-accounts/${accountId}`, { method: "DELETE" }),
+
+  // ------------------------------------------------ support
+  helpCentre: () => apiFetch<HelpCentre>("/support/help-centre", { params: { audience: "BUSINESS" } }),
+  searchHelp: (q: string) => apiFetch<{ query: string; total: number; results: Array<{ slug: string; title: string; summary: string | null; categoryName: string }> }>("/support/help/search", { params: { q } }),
+  supportAvailability: () => apiFetch<{ isOpen: boolean; timeZone: string; opensAt: string; closesAt: string; days: string }>("/support/availability"),
+  ticketCategories: () => apiFetch<Array<{ code: string; label: string; icon: string }>>("/support/ticket-categories"),
+  createTicket: (body: { category: string; subcategory?: string; priority?: "NORMAL" | "HIGH" | "URGENT"; subject: string; description: string; transactionReference?: string; businessId?: string; attachments?: Array<{ fileName: string; fileUrl: string; mimeType: string; sizeBytes: number }> }) =>
+    apiFetch<SupportTicketDetail>("/support/tickets", { method: "POST", body: JSON.stringify(body) }),
+  listTickets: (params?: { status?: string; businessId?: string }) =>
+    apiFetch<{ total: number; counts: TicketCounts; tickets: SupportTicketSummary[] }>("/support/tickets", { params }),
+  getTicket: (reference: string) => apiFetch<SupportTicketDetail>(`/support/tickets/${reference}`),
+  replyTicket: (reference: string, body: { body: string }) =>
+    apiFetch<SupportTicketDetail>(`/support/tickets/${reference}/reply`, { method: "POST", body: JSON.stringify(body) }),
+  closeTicket: (reference: string) => apiFetch<SupportTicketDetail>(`/support/tickets/${reference}/close`, { method: "POST", body: "{}" }),
+  escalateTicket: (reference: string) => apiFetch<SupportTicketDetail>(`/support/tickets/${reference}/escalate`, { method: "POST", body: "{}" }),
+};
+
+export type BusinessSettings = {
+  emailNotifications: boolean; paymentAlerts: boolean; dailySummary: boolean; weeklyReports: boolean; smsAlerts: boolean;
+  twoFactorAuth: boolean; ipWhitelist: string[]; sessionTimeoutMinutes: number;
+  autoPayoutEnabled: boolean; autoPayoutTime: string | null; payoutThreshold: string | null; payoutCurrency: string;
+};
+export type SettlementAccount = { id: string; bankName: string; bankCode: string; accountNumber: string; accountName: string; isDefault: boolean };
+export type TicketCounts = { submitted: number; underReview: number; waitingForInfo: number; resolved: number; closed: number };
+export type SupportTicketSummary = { reference: string; category: string; categoryLabel: string; subcategory?: string | null; subject: string; status: string; priority: string; assignedAgentName?: string | null; lastActivityAt: string; createdAt: string };
+export type SupportTicketDetail = SupportTicketSummary & {
+  transactionReference?: string | null; resolvedAt?: string | null; canReply: boolean; businessId?: string | null;
+  messages: Array<{ id: string; authorType: "CUSTOMER" | "AGENT"; authorName: string; body: string; createdAt: string; attachments: Array<{ id: string; fileName: string; fileUrl: string; mimeType: string; sizeBytes: number }> }>;
+};
+export type HelpCentre = {
+  popular: Array<{ id: string; slug: string; title: string; summary: string | null }>;
+  categories: Array<{ id: string; slug: string; name: string; description: string | null; icon: string | null; articleCount: number }>;
+  openTicketCount: number;
+  supportHours: { isOpen: boolean; opensAt: string; closesAt: string; days: string };
 };

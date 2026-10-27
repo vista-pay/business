@@ -64,6 +64,8 @@ export const businessApi = {
       auth: false,
     }),
   verifyOtp: (body: { identifier: string; otp: string; type: string }) => apiFetch("/auth/verify-otp", { method: "POST", body: JSON.stringify(body), auth: false }),
+  forgotPassword: (identifier: string) => apiFetch("/auth/forgot-password", { method: "POST", body: JSON.stringify({ identifier }), auth: false }),
+  resetPassword: (body: { identifier: string; otp: string; newPassword: string }) => apiFetch("/auth/reset-password", { method: "POST", body: JSON.stringify(body), auth: false }),
   sendOtp: (body: { identifier: string; type: string }) => apiFetch("/auth/send-otp", { method: "POST", body: JSON.stringify(body), auth: false }),
   me: () => apiFetch("/auth/me"),
   listBusinesses: () => apiFetch("/businesses"),

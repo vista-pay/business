@@ -36,6 +36,11 @@ export default function LoginPage() {
             <Input label="Email or phone" type="text" value={identifier} onChange={(e) => setIdentifier(e.target.value)} required placeholder="you@company.com" />
             <Input label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required placeholder="••••••••" />
             {error && <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>}
+            <div className="text-right">
+              <button type="button" className="text-sm font-medium text-slate-600 hover:underline" onClick={() => router.push("/forgot-password")}>
+                Forgot password?
+              </button>
+            </div>
             <Button type="submit" className="w-full" loading={loading} size="lg">Sign in</Button>
             <div className="flex items-center gap-3 pt-1">
               <span className="h-px flex-1 bg-slate-200" />

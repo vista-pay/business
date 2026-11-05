@@ -10,7 +10,7 @@ export function KybTopBar({ step }: { step: number | null }) {
   return (
     <header className="relative flex h-20 items-center justify-between border-b border-slate-200 bg-white px-4 sm:px-6 lg:px-10">
       <div className="flex items-center gap-2.5">
-        <img src="/rendi-brand-symbol.png" alt="Rendi" className="h-9 w-9 rounded-[10px]" />
+        <img src="/rendi-logo.svg" alt="Rendi" className="h-9 w-9 rounded-[10px]" />
         <span className="text-[20px] font-bold tracking-tight text-[#0F172A]">RENDI</span>
         <span className="rounded-md bg-[#EFF6FF] px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#2563EB]">
           Business

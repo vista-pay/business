@@ -18,7 +18,7 @@ export function Sidebar({ userName, businessName }: { userName: string; business
   return (
     <aside className="hidden h-screen w-[240px] shrink-0 flex-col bg-[#0F172A] lg:sticky lg:top-0 lg:flex">
       <div className="flex h-[72px] items-center gap-2.5 px-6">
-        <img src="/rendi-brand-symbol.png" alt="" className="h-9 w-9 rounded-[10px]" />
+        <img src="/rendi-logo.svg" alt="" className="h-9 w-9 rounded-[10px]" />
         <span className="text-[19px] font-bold tracking-tight text-white">RENDI</span>
       </div>
 

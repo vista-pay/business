@@ -15,7 +15,7 @@ export function MobileNav({ userName, businessName }: { userName: string; busine
     <>
       <div className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-white/10 bg-[#0F172A] px-4 lg:hidden">
         <span className="flex items-center gap-2">
-          <img src="/rendi-brand-symbol.png" alt="" className="h-7 w-7 rounded-lg" />
+          <img src="/rendi-logo.svg" alt="" className="h-7 w-7 rounded-lg" />
           <span className="text-[16px] font-bold tracking-tight text-white">RENDI</span>
         </span>
         <button
@@ -36,7 +36,7 @@ export function MobileNav({ userName, businessName }: { userName: string; busine
           <div className="absolute inset-y-0 left-0 flex w-[270px] max-w-[85vw] flex-col bg-[#0F172A]">
             <div className="flex h-14 items-center justify-between px-4">
               <span className="flex items-center gap-2">
-                <img src="/rendi-brand-symbol.png" alt="" className="h-7 w-7 rounded-lg" />
+                <img src="/rendi-logo.svg" alt="" className="h-7 w-7 rounded-lg" />
                 <span className="text-[16px] font-bold tracking-tight text-white">RENDI</span>
               </span>
               <button

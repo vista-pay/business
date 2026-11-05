@@ -36,14 +36,9 @@ export function filterLinks(links: PaymentLink[], filter: LinkFilter, search: st
   });
 }
 
-/**
- * The API returns a hardcoded `pay.vista.global` URL. The portal serves the
- * public page itself, so the shareable URL is built from the current origin -
- * otherwise Copy hands out a link that does not resolve.
- */
 export function publicUrl(linkHash: string) {
-  const origin = typeof window === "undefined" ? "" : window.location.origin;
-  return `${origin}/pay/${linkHash}`;
+  const base = (process.env.NEXT_PUBLIC_PAYMENT_BASE_URL ?? "https://pay.rendi.ng").replace(/\/+$/, "");
+  return `${base}/${linkHash}`;
 }
 
 export function expiryNote(expiresAt?: string | null) {
